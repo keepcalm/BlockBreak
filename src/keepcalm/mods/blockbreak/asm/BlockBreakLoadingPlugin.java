@@ -18,7 +18,7 @@ public class BlockBreakLoadingPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String getModContainerClass() {
-		return "keepcalm.mods.blockbreak.asm.BlockBreakContainer";
+		return null;
 	}
 
 	@Override
