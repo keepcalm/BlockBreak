@@ -75,17 +75,17 @@ public class BlockBreakEventAdder implements IClassTransformer
          * create a HashMap to store the MCP names of classes, methods, and fields used in the transformation
          */
         mcpStrings = new HashMap();
-        mcpStrings.put("className", "net.minecraft.src.ItemInWorldManager");
-        mcpStrings.put("javaClassName", "net/minecraft/src/ItemInWorldManager");
+        mcpStrings.put("className", "net.minecraft.item.ItemInWorldManager");
+        mcpStrings.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
         mcpStrings.put("targetMethodName", "removeBlock");
         mcpStrings.put("worldFieldName", "theWorld");
         mcpStrings.put("entityPlayerFieldName", "thisPlayerMP");
-        mcpStrings.put("worldJavaClassName", "net/minecraft/src/World");
+        mcpStrings.put("worldJavaClassName", "net/minecraft/world/World");
         mcpStrings.put("getBlockMetadataMethodName", "getBlockMetadata");
-        mcpStrings.put("blockJavaClassName", "net/minecraft/src/Block");
+        mcpStrings.put("blockJavaClassName", "net/minecraft/block/Block");
         mcpStrings.put("blocksListFieldName", "blocksList");
-        mcpStrings.put("entityPlayerJavaClassName", "net/minecraft/src/EntityPlayer");
-        mcpStrings.put("entityPlayerMPJavaClassName", "net/minecraft/src/EntityPlayerMP");
+        mcpStrings.put("entityPlayerJavaClassName", "net/minecraft/entity/player/EntityPlayer");
+        mcpStrings.put("entityPlayerMPJavaClassName", "net/minecraft/entity/player/EntityPlayerMP");
     }
     
     @Override
