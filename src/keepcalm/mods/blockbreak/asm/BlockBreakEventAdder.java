@@ -59,11 +59,11 @@ public class BlockBreakEventAdder implements IClassTransformer
         /* thisPlayerMP */
         obfStrings.put("entityPlayerFieldName", "b");
         /* net/minecraft/src/World */
-        obfStrings.put("worldJavaClassName", "xv");
+        obfStrings.put("worldJavaClassName", "yc");
         /* net/minecraft/src/World.getBlockMetadata() */
         obfStrings.put("getBlockMetadataMethodName", "h");
         /* net/minecraft/src/Block */
-        obfStrings.put("blockJavaClassName", "amj");
+        obfStrings.put("blockJavaClassName", "amq");
         /* net/minecraft/src/Block.blocksList[] */
         obfStrings.put("blocksListFieldName", "p");
         /* net/minecraft/src/EntityPlayer */
