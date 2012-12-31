@@ -13,7 +13,14 @@ public class BlockBreakLoadingPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { "keepcalm.mods.blockbreak.asm.BlockBreakEventAdder" };
+		try {
+			// if bukkitforge is installed, don't worry - it will return for us
+			Class.forName("keepcalm.mods.bukkit.BukkitContainer");
+			return null;
+		}
+		catch (ClassNotFoundException e) {
+			return new String[] { "keepcalm.mods.blockbreak.asm.BlockBreakEventAdder" };
+		}
 	}
 
 	@Override
