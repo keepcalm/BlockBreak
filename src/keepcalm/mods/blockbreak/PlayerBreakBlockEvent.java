@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.Event;
 
-public class BlockBreakEvent extends Event {
+public class PlayerBreakBlockEvent extends Event {
 		public final World world;
 		public final int blockX;
 		public final int blockY;
@@ -13,7 +13,7 @@ public class BlockBreakEvent extends Event {
 		public final Block block;
 		public final int blockMeta;
 		public final EntityPlayer player;
-	    public BlockBreakEvent(World world, int x, int y, int z, Block block, int metadata, EntityPlayer entityPlayer) {
+	    public PlayerBreakBlockEvent(World world, int x, int y, int z, Block block, int metadata, EntityPlayer entityPlayer) {
 	    	super();
 	    	this.world = world;
 	    	blockX = x;
