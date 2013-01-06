@@ -14,10 +14,13 @@ import java.util.Iterator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -190,7 +193,11 @@ public class BlockBreakEventAdder implements IClassTransformer
                         toInject.add(new VarInsnNode(ILOAD, mdIndex));
                         toInject.add(new VarInsnNode(ALOAD, 0));
                         toInject.add(new FieldInsnNode(GETFIELD, (String) hm.get("javaClassName"), (String) hm.get("entityPlayerFieldName"), "L" + (String) hm.get("entityPlayerMPJavaClassName") + ";"));
-                        toInject.add(new MethodInsnNode(INVOKESTATIC, "keepcalm/mods/blockbreak/EventFactory", "onBlockHarvested", "(L" + (String) hm.get("worldJavaClassName") + ";IIIL" + (String) hm.get("blockJavaClassName") + ";IL" + (String) hm.get("entityPlayerJavaClassName") + ";)V"));
+                        toInject.add(new MethodInsnNode(INVOKESTATIC, "keepcalm/mods/blockbreak/EventFactory", "onBlockHarvested", "(L" + (String) hm.get("worldJavaClassName") + ";IIIL" + (String) hm.get("blockJavaClassName") + ";IL" + (String) hm.get("entityPlayerJavaClassName") + ";)Z"));
+                        LabelNode endIf = new LabelNode(new Label());
+                        toInject.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
+                        toInject.add(new InsnNode(Opcodes.RETURN));
+                        toInject.add(endIf);
                         toInject.add(lmm1Node);
                         
                         m.instructions.insertBefore(m.instructions.get(index + offset), toInject);

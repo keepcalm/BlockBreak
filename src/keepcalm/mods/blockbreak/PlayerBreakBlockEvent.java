@@ -3,8 +3,10 @@ package keepcalm.mods.blockbreak;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.Event;
 
+@Cancelable
 public class PlayerBreakBlockEvent extends Event {
 		public final World world;
 		public final int blockX;
