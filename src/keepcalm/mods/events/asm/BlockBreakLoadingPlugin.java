@@ -1,4 +1,4 @@
-package keepcalm.mods.blockbreak.asm;
+package keepcalm.mods.events.asm;
 
 import java.util.Map;
 

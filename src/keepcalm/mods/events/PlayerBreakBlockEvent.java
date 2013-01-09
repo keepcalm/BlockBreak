@@ -1,4 +1,4 @@
-package keepcalm.mods.blockbreak;
+package keepcalm.mods.events;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,4 +1,4 @@
-package keepcalm.mods.blockbreak;
+package keepcalm.mods.events;
 
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;

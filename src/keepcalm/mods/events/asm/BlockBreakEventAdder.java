@@ -1,4 +1,4 @@
-package keepcalm.mods.blockbreak.asm;
+package keepcalm.mods.events.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ASTORE;
