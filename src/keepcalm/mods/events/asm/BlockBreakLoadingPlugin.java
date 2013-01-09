@@ -19,7 +19,10 @@ public class BlockBreakLoadingPlugin implements IFMLLoadingPlugin {
 			return null;
 		}
 		catch (ClassNotFoundException e) {
-			return new String[] { "keepcalm.mods.blockbreak.asm.BlockBreakEventAdder" };
+			return new String[] { "keepcalm.mods.events.asm.BlockBreakEventAdder",
+			"keepcalm.mods.events.asm.transformers.events.BlockEventHelpers",
+			"keepcalm.mods.events.asm.transformers.events.EntityEventHelpers"
+			};
 		}
 	}
 
