@@ -67,7 +67,7 @@ public class ForgeEventHelper {
 			origZ -= i.offsetZ;
 		}
 		
-		LiquidFlowEvent ev = new LiquidFlowEvent(blck, flowX, flowY, flowZ, origX, origY, origZ);
+		LiquidFlowEvent ev = new LiquidFlowEvent(blck, world, flowX, flowY, flowZ, origX, origY, origZ);
 		MinecraftForge.EVENT_BUS.post(ev);
 		
 		if (ev.isCanceled()) {
