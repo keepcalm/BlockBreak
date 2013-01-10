@@ -4,9 +4,11 @@ import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
 import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.DispenseItemEvent;
+import keepcalm.mods.events.events.LiquidFlowEvent;
 import keepcalm.mods.events.events.PlayerDamageBlockEvent;
 import keepcalm.mods.events.events.PlayerMoveEvent;
 import keepcalm.mods.events.events.PlayerUseItemEvent;
+import keepcalm.mods.events.events.SheepDyeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +44,36 @@ public class ForgeEventHelper {
 		MinecraftForge.EVENT_BUS.post(ev);
 	}
 	
-	public static boolean onBlockFlow(Block blck, int flowX, int flowY, int flowZ) {
+	public static boolean onBlockFlow(Block blck, World world, int flowX, int flowY, int flowZ) {
+		
+		Block flowingBlck = Block.blocksList[blck.blockID + 1];
+		
+		// get original liquid
+		int origX = flowX;
+		int origY = flowY;
+		int origZ = flowZ;
+		
+		for (ForgeDirection i : ForgeDirection.values()) {
+			
+			origX += i.offsetX;
+			origY += i.offsetY;
+			origZ += i.offsetZ;
+			
+			if (world.getBlockId(origX, origY, origZ) == blck.blockID) {
+				break;
+			}
+			origX -= i.offsetX;
+			origY -= i.offsetY;
+			origZ -= i.offsetZ;
+		}
+		
+		LiquidFlowEvent ev = new LiquidFlowEvent(blck, flowX, flowY, flowZ, origX, origY, origZ);
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		if (ev.isCanceled()) {
+			return true;
+		}
+		
 		return false;
 	}
 	public static boolean onPlayerMove(Packet10Flying pack, NetServerHandler handler) {
@@ -101,7 +132,12 @@ public class ForgeEventHelper {
 		return false;
 	}
 	
-	public static boolean onSheepDye(EntitySheep sheep, int newColor, byte oldColor) {
+	public static boolean onSheepDye(EntitySheep sheep, int newColour, byte oldColour) {
+		SheepDyeEvent ev = new SheepDyeEvent(sheep, newColour, oldColour);
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		if (ev.isCanceled()) return true;
+		
 		return false;
 	}
 	
