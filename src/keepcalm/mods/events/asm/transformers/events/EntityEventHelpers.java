@@ -32,7 +32,10 @@ public class EntityEventHelpers implements IClassTransformer {
 	public byte[] transform(String name, byte[] bytes) {
 		
 		if (name.equalsIgnoreCase(names.get("entitySheep_className"))) {
-			transformEntitySheep(bytes);
+			return transformEntitySheep(bytes);
+		}
+		else if (name.equalsIgnoreCase(names.get("netServerHandler_className"))) {
+			return transformNetServerHandler(bytes);
 		}
 		
 		return bytes;
@@ -43,7 +46,28 @@ public class EntityEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
 		
-		// TODO :P
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			
+			if (m.name.equals(names.get("netServerHandler_handleFlying_func")) && m.desc.equals(names.get("netServerHandler_handleFlying_desc"))) {
+				System.out.println("Found target method: " + m.name + m.desc + "! Inserting code...");
+				
+				InsnList toInsert = new InsnList();
+				toInsert.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onPlayerMove", 
+						"(L" + names.get("packet10Flying_javaName") + ";L" + names.get("netServerHandler_javaName") + ";)Z"));
+				LabelNode endIf = new LabelNode(new Label());
+				toInsert.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
+				toInsert.add(new InsnNode(Opcodes.RETURN));
+				toInsert.add(endIf);
+				toInsert.add(new LabelNode(new Label()));
+				m.instructions.insert(toInsert);
+				
+				
+			}
+		}
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cn.accept(cw);

@@ -193,7 +193,7 @@ public class BlockBreakEventAdder implements IClassTransformer
                         toInject.add(new VarInsnNode(ILOAD, mdIndex));
                         toInject.add(new VarInsnNode(ALOAD, 0));
                         toInject.add(new FieldInsnNode(GETFIELD, (String) hm.get("javaClassName"), (String) hm.get("entityPlayerFieldName"), "L" + (String) hm.get("entityPlayerMPJavaClassName") + ";"));
-                        toInject.add(new MethodInsnNode(INVOKESTATIC, "keepcalm/mods/blockbreak/EventFactory", "onBlockHarvested", "(L" + (String) hm.get("worldJavaClassName") + ";IIIL" + (String) hm.get("blockJavaClassName") + ";IL" + (String) hm.get("entityPlayerJavaClassName") + ";)Z"));
+                        toInject.add(new MethodInsnNode(INVOKESTATIC, "keepcalm/mods/events/EventFactory", "onBlockHarvested", "(L" + (String) hm.get("worldJavaClassName") + ";IIIL" + (String) hm.get("blockJavaClassName") + ";IL" + (String) hm.get("entityPlayerJavaClassName") + ";)Z"));
                         LabelNode endIf = new LabelNode(new Label());
                         toInject.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
                         toInject.add(new InsnNode(Opcodes.ICONST_1));

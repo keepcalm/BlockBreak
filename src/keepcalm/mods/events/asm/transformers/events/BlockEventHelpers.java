@@ -77,6 +77,46 @@ public class BlockEventHelpers implements IClassTransformer {
 		
 	}
 	
+	private byte[] transformBlockFlowing(byte[] bytes) {
+		ClassNode cn = new ClassNode();
+		ClassReader cr = new ClassReader(bytes);
+		cr.accept(cn,  0);
+		
+		
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			
+			if (m.name.equals(names.get("blockFlowing_updateFlow_func")) &&m.desc.equals(names.get("blockFlowing_updateFlow_func"))) {
+				System.out.println("Found target method: " + m.name + m.desc + "!");
+				
+				
+				InsnList toAdd = new InsnList();
+				
+				toAdd.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				toAdd.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				toAdd.add(new VarInsnNode(Opcodes.ILOAD, 2));
+				toAdd.add(new VarInsnNode(Opcodes.ILOAD, 3));
+				toAdd.add(new VarInsnNode(Opcodes.ILOAD, 4));///
+				toAdd.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 
+						"keepcalm/mods/events/ForgeEventHelper", "onBlockFlow",
+						"(L" + names.get("block_javaName") + ";L" + names.get("world_javaName") + ";III)Z"));
+				LabelNode endIf = new LabelNode(new Label());
+				toAdd.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
+				toAdd.add(new InsnNode(Opcodes.RETURN));
+				toAdd.add(endIf);
+				toAdd.add(new LabelNode(new Label()));
+				
+				m.instructions.add(toAdd);
+		}
+			
+		}
+		
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		cn.accept(cw);
+		return cw.toByteArray();
+	}
+	
 	private byte[] transformBlock(byte[] bytes, HashMap<String,String> names) {
 		ClassNode cn = new ClassNode();
 		ClassReader cr = new ClassReader(bytes);

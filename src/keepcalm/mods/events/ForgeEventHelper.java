@@ -5,13 +5,16 @@ import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.DispenseItemEvent;
 import keepcalm.mods.events.events.PlayerDamageBlockEvent;
+import keepcalm.mods.events.events.PlayerMoveEvent;
 import keepcalm.mods.events.events.PlayerUseItemEvent;
+import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet10Flying;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,7 +42,25 @@ public class ForgeEventHelper {
 		MinecraftForge.EVENT_BUS.post(ev);
 	}
 	
+	public static boolean onBlockFlow(Block blck, int flowX, int flowY, int flowZ) {
+		return false;
+	}
 	public static boolean onPlayerMove(Packet10Flying pack, NetServerHandler handler) {
+		PlayerMoveEvent ev = new PlayerMoveEvent(handler.playerEntity,
+				handler.playerEntity.serverPosX, 
+				handler.playerEntity.serverPosY, 
+				handler.playerEntity.serverPosZ, 
+				MathHelper.floor_double(pack.xPosition), 
+				MathHelper.floor_double(pack.yPosition), 
+				MathHelper.floor_double(pack.zPosition), 
+				!pack.onGround);
+		
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		if (ev.isCanceled()) {
+			return true;
+		}
+		
 		return false;
 	}
 	
