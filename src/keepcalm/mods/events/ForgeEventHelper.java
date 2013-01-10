@@ -47,9 +47,9 @@ public class ForgeEventHelper {
 	}
 	public static boolean onPlayerMove(Packet10Flying pack, NetServerHandler handler) {
 		PlayerMoveEvent ev = new PlayerMoveEvent(handler.playerEntity,
-				handler.playerEntity.serverPosX, 
-				handler.playerEntity.serverPosY, 
-				handler.playerEntity.serverPosZ, 
+				MathHelper.floor_double(handler.playerEntity.posX), 
+				MathHelper.floor_double(handler.playerEntity.posY),
+				MathHelper.floor_double(handler.playerEntity.posZ), 
 				MathHelper.floor_double(pack.xPosition), 
 				MathHelper.floor_double(pack.yPosition), 
 				MathHelper.floor_double(pack.zPosition), 
