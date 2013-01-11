@@ -7,9 +7,9 @@ import net.minecraftforge.event.entity.EntityEvent;
 @Cancelable
 public class CreeperExplodeEvent extends EntityEvent {
 
-	final int explosionRadius;
+	public final int explosionRadius;
 	
-	final EntityCreeper creeper;
+	public final EntityCreeper creeper;
 	
 	public CreeperExplodeEvent(EntityCreeper entity, int explodeRadius) {
 		super(entity);
