@@ -1,11 +1,12 @@
 package keepcalm.mods.events;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
 import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
 import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
+import keepcalm.mods.events.asm.transformers.events.ObfuscationHelper;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.CreeperExplodeEvent;
 import keepcalm.mods.events.events.DispenseItemEvent;
@@ -20,7 +21,6 @@ import net.minecraft.block.BlockPressurePlate;
 import net.minecraft.block.EnumMobType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EnumEntitySize;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,7 +52,18 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class ForgeEventHelper {
 	
 	public static boolean onPressurePlateInteract(BlockPressurePlate pp, World world, int x, int y, int z) {
-		EnumMobType type = pp.triggerMobType;
+		Class clazz = pp.getClass();
+		EnumMobType type;
+		try {
+			Field f = clazz.getField(ObfuscationHelper.getRelevantMappings().get("blockPressurePlate_triggerMobType_fieldName"));
+			f.setAccessible(true);
+			type = (EnumMobType) f.get(pp);
+		} catch (Exception e) {
+			System.out.println("Fatal error in posting PressurePlateInteractEvent - perhaps you are using an incorrect version of Events API for your Minecraft version?");
+			e.printStackTrace();
+			return false;
+		}
+		
 		
 		float var7 = 0.125F;
 		
