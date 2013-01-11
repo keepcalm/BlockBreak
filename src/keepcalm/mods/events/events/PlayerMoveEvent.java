@@ -6,14 +6,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 @Cancelable
 public class PlayerMoveEvent extends PlayerEvent {
-	final int oldX;
-	final int oldY;
-	final int oldZ;
-	final int newX;
-	final int newY;
-	final int newZ;
+	public final int oldX;
+	public final int oldY;
+	public final int oldZ;
+	public final int newX;
+	public final int newY;
+	public final int newZ;
 	
-	final boolean flying;
+	public final boolean flying;
 
 	public PlayerMoveEvent(EntityPlayer player, int oldX, int oldY, int oldZ, int newX, int newY, int newZ, boolean flying) {
 		super(player);
