@@ -36,6 +36,8 @@ public class BlockEventHelpers implements IClassTransformer {
 
 	}
 
+	
+
 	@Override
 	public byte[] transform(String name, byte[] bytes) {
 		if (name.equalsIgnoreCase(names.get("itemStack_className"))) {
@@ -50,11 +52,72 @@ public class BlockEventHelpers implements IClassTransformer {
 		else if (name.equalsIgnoreCase(names.get("blockDispenser_className"))) {
 			return transformDispenser(bytes, names);
 		}
-
+		else if (name.equalsIgnoreCase(names.get("blockFlowing_className"))) {
+			return transformBlockFlowing(bytes);
+		}
+		else if (name.equalsIgnoreCase(names.get("blockPressurePlate_className"))) {
+			return transformBlockPressurePlate(bytes);
+		}
 
 		return bytes;
 	}
 
+	
+	// second IFNE from the end
+	private byte[] transformBlockPressurePlate(byte[] bytes) {
+		ClassNode cn = new ClassNode();
+		ClassReader cr = new ClassReader(bytes);
+		cr.accept(cn, 0);
+		
+		
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			
+			if (m.name.equals(names.get("blockPressurePlate_setStateIfMobInteractsWithPlate_func")) && m.desc.equals("blockPressurePlate_setStateIfMobInteractsWithPlate_desc")) {
+				System.out.println("Found target method within BlockPressurePlate: " + m.name + m.desc);
+				int ifnes = 0;
+				for (int i = m.instructions.size() - 1; i >= 0; i--) {
+					
+					if (m.instructions.get(i).getOpcode() == Opcodes.IFNE) {
+						ifnes++;
+						if (ifnes == 2) {
+							// insert!
+							i++;
+							System.out.println("Found second IFNE node from the end, inserting code...");
+							InsnList insns = new InsnList();
+							
+							insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
+							insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
+							insns.add(new VarInsnNode(Opcodes.ILOAD, 2));
+							insns.add(new VarInsnNode(Opcodes.ILOAD, 3));
+							insns.add(new VarInsnNode(Opcodes.ILOAD, 4));
+							insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper",
+									"onPressurePlateInteract", "(L" + names.get("blockPressurePlate_javaName") + ";L" + names.get("world_javaName") + ";III)Z"));
+							LabelNode endIf = new LabelNode(new Label());
+							insns.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
+							insns.add(new InsnNode(Opcodes.RETURN));
+							insns.add(endIf);
+							insns.add(new LabelNode(new Label()));
+							
+							m.instructions.insertBefore(m.instructions.get(i), insns);
+							
+						}
+					}
+					
+				}
+				
+				
+			}
+		}
+		
+		
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		cn.accept(cw);
+		return cw.toByteArray();
+	}
+	
 	private byte[] transformBlockFire(byte[] bytes, HashMap<String, String> names) {
 		
 		ClassNode cn = new ClassNode();

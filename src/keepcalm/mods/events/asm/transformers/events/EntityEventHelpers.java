@@ -37,6 +37,9 @@ public class EntityEventHelpers implements IClassTransformer {
 		else if (name.equalsIgnoreCase(names.get("netServerHandler_className"))) {
 			return transformNetServerHandler(bytes);
 		}
+		else if (name.equalsIgnoreCase(names.get("entityCreeper_className"))) {
+			return transformCreeper(bytes);
+		}
 		
 		return bytes;
 	}

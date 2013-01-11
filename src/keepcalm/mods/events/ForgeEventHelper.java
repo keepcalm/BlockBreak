@@ -1,5 +1,9 @@
 package keepcalm.mods.events;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
 import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.events.BlockDestroyEvent;
@@ -9,8 +13,14 @@ import keepcalm.mods.events.events.LiquidFlowEvent;
 import keepcalm.mods.events.events.PlayerDamageBlockEvent;
 import keepcalm.mods.events.events.PlayerMoveEvent;
 import keepcalm.mods.events.events.PlayerUseItemEvent;
+import keepcalm.mods.events.events.PressurePlateInteractEvent;
 import keepcalm.mods.events.events.SheepDyeEvent;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockPressurePlate;
+import net.minecraft.block.EnumMobType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumEntitySize;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet10Flying;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -34,11 +45,65 @@ import cpw.mods.fml.common.FMLCommonHandler;
  * RULES OF ADDING METHODS:
  *  - They must use the least number of arguments possible - if you need obj.x, obj.y and obj.z, just pass obj.
  *  This is for efficiency.
- *  - If they are going to be cancelable, they must return TRUE when CANCELLED, this is easier to write in ASM.
+ *  - If they are going to be cancellable, they must return TRUE when CANCELLED, this is easier to write in ASM.
  * @author keepcalm
  *
  */
 public class ForgeEventHelper {
+	
+	public static boolean onPressurePlateInteract(BlockPressurePlate pp, World world, int x, int y, int z) {
+		EnumMobType type = pp.triggerMobType;
+		
+		float var7 = 0.125F;
+		
+		List entities = null;
+		if (type == EnumMobType.everything)
+        {
+            entities = world.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)x + var7), (double)y, (double)((float)z + var7), (double)((float)(x + 1) - var7), (double)y + 0.25D, (double)((float)(z + 1) - var7)));
+        }
+
+        if (type == EnumMobType.mobs)
+        {
+            entities = world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)x + var7), (double)y, (double)((float)z + var7), (double)((float)(x + 1) - var7), (double)y + 0.25D, (double)((float)(z + 1) - var7)));
+        }
+
+        if (type == EnumMobType.players)
+        {
+            entities = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)x + var7), (double)y, (double)((float)z + var7), (double)((float)(x + 1) - var7), (double)y + 0.25D, (double)((float)(z + 1) - var7)));
+        }
+
+        Entity targetEntity = null;
+        if (!entities.isEmpty())
+        {
+            Iterator var9 = entities.iterator();
+            
+            while (var9.hasNext())
+            {
+                targetEntity = (Entity)var9.next();
+
+                if (!targetEntity.doesEntityNotTriggerPressurePlate())
+                {
+                    break;
+                }
+            }
+        }
+        
+        if (targetEntity == null) {
+        	// ninja?
+        	return false;
+        }
+		
+        
+        PressurePlateInteractEvent ev = new PressurePlateInteractEvent(targetEntity, pp, world, x, y, z);
+		
+        MinecraftForge.EVENT_BUS.post(ev);
+        
+        if (ev.isCanceled()) {
+        	return true;
+        }
+        
+		return false;
+	}
 	
 	public static boolean onCreeperExplode(EntityCreeper creep) {
 		NBTTagCompound nbt = new NBTTagCompound();

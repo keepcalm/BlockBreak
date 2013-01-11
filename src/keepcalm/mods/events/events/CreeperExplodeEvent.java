@@ -1,6 +1,5 @@
 package keepcalm.mods.events.events;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.EntityEvent;
