@@ -3,11 +3,11 @@ package keepcalm.mods.events.asm.transformers.events;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -76,6 +76,69 @@ public class EntityEventHelpers implements IClassTransformer {
 		cn.accept(cw);
 		return cw.toByteArray();
 		
+	}
+	
+	private byte[] transformLightningBolt(byte[] bytes) {
+		ClassNode cn = new ClassNode();
+		ClassReader cr = new ClassReader(bytes);
+		cr.accept(cn, 0);
+		
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			if (m.name.equals("<init>")) {
+				System.out.println("Found constructor in EntityLightningBolt, searching for landmarks...");
+				AbstractInsnNode mark1 = null;
+				AbstractInsnNode mark2 = null;
+				AbstractInsnNode firstEndIf = null;
+				AbstractInsnNode secondEndIf = null;
+				
+				InsnList insns1 = new InsnList();
+				insns1.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				insns1.add(new VarInsnNode(Opcodes.ILOAD, 8));
+				insns1.add(new VarInsnNode(Opcodes.ILOAD, 9));
+				insns1.add(new VarInsnNode(Opcodes.ILOAD, 10));
+				insns1.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onLightningStrike", "(L" + names.get("entityLightningBolt_javaName") + ";L" + names.get("world_javaName") + ";III)Z"));
+				LabelNode endIf1 = new LabelNode(new Label());
+				insns1.add(new JumpInsnNode(Opcodes.IFNE, endIf1));
+				
+				
+				InsnList insns2 = new InsnList();
+				insns2.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				insns2.add(new VarInsnNode(Opcodes.ILOAD, 9));
+				insns2.add(new VarInsnNode(Opcodes.ILOAD, 10));
+				insns2.add(new VarInsnNode(Opcodes.ILOAD, 11));
+				insns2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onLightningStrike", "(L" + names.get("entityLightningBolt_javaName") + ";L" + names.get("world_javaName") + ";III)Z"));
+				LabelNode endIf2 = new LabelNode(new Label());
+				insns2.add(new JumpInsnNode(Opcodes.IFNE, endIf2));
+				boolean firstInvokeV = false;
+				
+				for (int i = 0; i < m.instructions.size(); i++) {
+					
+					if (m.instructions.get(i).getOpcode() == Opcodes.IFEQ) {
+						if (mark1 != null) mark2 = m.instructions.get(i).getNext();
+						else			   mark1 = m.instructions.get(i).getNext();
+					}
+					
+					if (m.instructions.get(i).getOpcode() == Opcodes.INVOKEVIRTUAL && !firstInvokeV && mark1 != null) {
+						firstEndIf = m.instructions.get(i).getNext();
+					}
+					else if (m.instructions.get(i).getOpcode() == Opcodes.INVOKEVIRTUAL && mark2 != null && firstInvokeV) {
+						secondEndIf = m.instructions.get(i).getNext();
+					}
+				}
+				m.instructions.insertBefore(mark1, insns1);
+				m.instructions.insertBefore(firstEndIf, endIf1);
+				m.instructions.insertBefore(mark2, insns2);
+				m.instructions.insertBefore(secondEndIf, endIf2);
+				
+			}
+			
+		}
+		
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		cn.accept(cw);
+		return cw.toByteArray();
 	}
 	
 	private byte[] transformEntitySheep(byte[] bytes) {

@@ -4,12 +4,15 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
 import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.asm.transformers.events.ObfuscationHelper;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.CreeperExplodeEvent;
 import keepcalm.mods.events.events.DispenseItemEvent;
+import keepcalm.mods.events.events.LightningStrikeEvent;
 import keepcalm.mods.events.events.LiquidFlowEvent;
 import keepcalm.mods.events.events.PlayerDamageBlockEvent;
 import keepcalm.mods.events.events.PlayerMoveEvent;
@@ -21,6 +24,7 @@ import net.minecraft.block.BlockPressurePlate;
 import net.minecraft.block.EnumMobType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,8 +39,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 
-import org.bukkit.Bukkit;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
@@ -50,6 +52,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  */
 public class ForgeEventHelper {
+	
+	public static boolean onLightningStrike(EntityLightningBolt entity, World world, int x, int y, int z) {
+		
+		LightningStrikeEvent ev = new LightningStrikeEvent(entity, world, x, y, z);
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		return ev.isCanceled();
+	}
 	
 	public static boolean onPressurePlateInteract(BlockPressurePlate pp, World world, int x, int y, int z) {
 		Class clazz = pp.getClass();
@@ -191,6 +201,10 @@ public class ForgeEventHelper {
 		
 		// mcp has ridiculously long names
 		
+		if (man.curblockDamage % 2 == 1) {
+			return false;
+		}
+		
 		PlayerDamageBlockEvent ev = new PlayerDamageBlockEvent(man.thisPlayerMP, man.partiallyDestroyedBlockX,
 				man.partiallyDestroyedBlockY, man.partiallyDestroyedBlockZ,
 				man.theWorld, man.curblockDamage, man.durabilityRemainingOnBlock);
@@ -276,10 +290,13 @@ public class ForgeEventHelper {
 			if (id == 0) // no point - air got broken
 				return;
 			//System.out.println("This is a break!");
-			Bukkit.getScheduler().runTaskLater(BukkitDummyPlugin.INSTANCE, new Runnable() {
+			Runnable run = new Runnable() {
 				
 				@Override
 				public void run() {
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {}
 					BlockDestroyEvent ev = new BlockDestroyEvent(world, x, y, z, id, data);
 					MinecraftForge.EVENT_BUS.post(ev);
 					
@@ -288,7 +305,9 @@ public class ForgeEventHelper {
 					}
 				}
 				
-			}, 10);
+			};
+			Thread thr = new Thread(run);
+			thr.start();
 		}
 	}
 	
