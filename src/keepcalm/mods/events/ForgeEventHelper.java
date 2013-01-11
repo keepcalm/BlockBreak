@@ -36,6 +36,7 @@ import net.minecraft.network.packet.Packet10Flying;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -250,6 +251,10 @@ public class ForgeEventHelper {
 	public static void onBlockBreak(final World world, final int x, final int y, final int z, final int id, final int data) {
 		if (!ForgeEventHandler.ready)
 			return;
+		Chunk cnk = world.getChunkFromBlockCoords(x, z);
+		if (!cnk.isTerrainPopulated || !cnk.isChunkLoaded) {
+			return;
+		}
 		try {
 			throw new RuntimeException("nobody saw this");
 		}
@@ -276,7 +281,7 @@ public class ForgeEventHelper {
 					break;
 				}
 				// it was us cancelling - or us doing something else
-				if (i.getClassName().contains("keepcalm.mods.bukkit")) {
+				if (i.getClassName().contains("keepcalm.mods.bukkit") || i.getClassName().contains("keepcalm.mods")) {
 					foundIIWM = true;
 					break;
 				}
