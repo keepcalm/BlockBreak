@@ -94,6 +94,7 @@ public class EntityEventHelpers implements IClassTransformer {
 				AbstractInsnNode secondEndIf = null;
 				
 				InsnList insns1 = new InsnList();
+				insns1.add(new VarInsnNode(Opcodes.ALOAD, 0));
 				insns1.add(new VarInsnNode(Opcodes.ALOAD, 1));
 				insns1.add(new VarInsnNode(Opcodes.ILOAD, 8));
 				insns1.add(new VarInsnNode(Opcodes.ILOAD, 9));
@@ -104,6 +105,7 @@ public class EntityEventHelpers implements IClassTransformer {
 				
 				
 				InsnList insns2 = new InsnList();
+				insns1.add(new InsnNode(Opcodes.ACONST_NULL));
 				insns2.add(new VarInsnNode(Opcodes.ALOAD, 1));
 				insns2.add(new VarInsnNode(Opcodes.ILOAD, 9));
 				insns2.add(new VarInsnNode(Opcodes.ILOAD, 10));
