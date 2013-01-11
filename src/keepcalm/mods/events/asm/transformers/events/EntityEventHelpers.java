@@ -123,4 +123,41 @@ public class EntityEventHelpers implements IClassTransformer {
 		return cw.toByteArray();
 	}
 
+	public byte[] transformCreeper(byte[] bytes) {
+		ClassNode cn = new ClassNode();
+		ClassReader cr = new ClassReader(bytes);
+		cr.accept(cn,  0);
+		
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			
+			if (m.name.equals(names.get("entityCreeper_updateEntity_func")) && m.desc.equals(names.get("entityCreeper_updateEntity_desc"))) {
+				for (int i = m.instructions.size() - 1; i >= 0; i--) {
+					if (m.instructions.get(i).getOpcode() == Opcodes.IFNE) {
+						System.out.println("Found insertion point! inserting code!");
+						i++;
+						
+						InsnList insns = new InsnList();
+						
+						insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
+						insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onCreeperExplode", "(L" + names.get("entityCreeper_javaName") + ";)Z"));
+						LabelNode endIf = new LabelNode(new Label());
+						insns.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
+						insns.add(new InsnNode(Opcodes.RETURN));
+						insns.add(endIf);
+						insns.add(new LabelNode(new Label()));
+						
+						m.instructions.insertBefore(m.instructions.get(i), insns);
+					}
+				}
+			}
+			
+		}
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		cn.accept(cw);
+		return cw.toByteArray();
+	}
+	
 }

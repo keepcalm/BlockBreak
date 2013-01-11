@@ -3,6 +3,7 @@ package keepcalm.mods.events;
 import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
 import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.events.BlockDestroyEvent;
+import keepcalm.mods.events.events.CreeperExplodeEvent;
 import keepcalm.mods.events.events.DispenseItemEvent;
 import keepcalm.mods.events.events.LiquidFlowEvent;
 import keepcalm.mods.events.events.PlayerDamageBlockEvent;
@@ -10,10 +11,12 @@ import keepcalm.mods.events.events.PlayerMoveEvent;
 import keepcalm.mods.events.events.PlayerUseItemEvent;
 import keepcalm.mods.events.events.SheepDyeEvent;
 import net.minecraft.block.Block;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet10Flying;
 import net.minecraft.util.MathHelper;
@@ -36,6 +39,19 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  */
 public class ForgeEventHelper {
+	
+	public static boolean onCreeperExplode(EntityCreeper creep) {
+		NBTTagCompound nbt = new NBTTagCompound();
+		creep.writeEntityToNBT(nbt);
+		CreeperExplodeEvent ev = new CreeperExplodeEvent(creep, nbt.getByte("ExplosionRadius"));
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		if (ev.isCanceled()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static void onItemUse(ItemStack stack, EntityPlayer who, World world, int x, int y, int z, int blockFace) {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
 			// not on client
