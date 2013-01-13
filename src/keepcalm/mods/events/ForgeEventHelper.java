@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
-import keepcalm.mods.bukkit.bukkitAPI.scheduler.BukkitDummyPlugin;
-import keepcalm.mods.bukkit.forgeHandler.ForgeEventHandler;
 import keepcalm.mods.events.asm.transformers.events.ObfuscationHelper;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.CreeperExplodeEvent;
@@ -263,8 +261,6 @@ public class ForgeEventHelper {
 	}
 	
 	public static void onBlockBreak(final World world, final int x, final int y, final int z, final int id, final int data) {
-		if (!ForgeEventHandler.ready)
-			return;
 		Chunk cnk = world.getChunkFromBlockCoords(x, z);
 		if (!cnk.isTerrainPopulated || !cnk.isChunkLoaded) {
 			return;
