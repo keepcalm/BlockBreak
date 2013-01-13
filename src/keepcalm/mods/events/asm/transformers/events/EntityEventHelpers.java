@@ -38,6 +38,7 @@ public class EntityEventHelpers implements IClassTransformer {
 			return transformNetServerHandler(bytes);
 		}
 		else if (name.equalsIgnoreCase(names.get("entityCreeper_className"))) {
+			System.out.println("Class name matched creeper...");
 			return transformCreeper(bytes);
 		}
 		
@@ -196,12 +197,15 @@ public class EntityEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn,  0);
 		
+		//System.out.println("Transforming EntityCreeper...");
+		
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
 			
-			if (m.name.equals(names.get("entityCreeper_updateEntity_func")) && m.desc.equals(names.get("entityCreeper_updateEntity_desc"))) {
+			//System.out.println(m.name + m.desc + " vs " + names.get("entityCreeper_onUpdate_func") + names.get("entityCreeper_onUpdate_desc"));
+			if (m.name.equals(names.get("entityCreeper_onUpdate_func")) && m.desc.equals(names.get("entityCreeper_onUpdate_desc"))) {
 				for (int i = m.instructions.size() - 1; i >= 0; i--) {
 					if (m.instructions.get(i).getOpcode() == Opcodes.IFNE) {
 						System.out.println("Found insertion point! inserting code!");
@@ -218,6 +222,7 @@ public class EntityEventHelpers implements IClassTransformer {
 						insns.add(new LabelNode(new Label()));
 						
 						m.instructions.insertBefore(m.instructions.get(i), insns);
+						break;
 					}
 				}
 			}
