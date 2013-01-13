@@ -58,8 +58,46 @@ public class BlockEventHelpers implements IClassTransformer {
 		else if (name.equalsIgnoreCase(names.get("blockPressurePlate_className"))) {
 			return transformBlockPressurePlate(bytes);
 		}
+		else if (name.equalsIgnoreCase(names.get("netServerHandler_className"))) {
+			return transformNetServerHandler(bytes);
+		}
 
 		return bytes;
+	}
+	
+	private byte[] transformNetServerHandler(byte[] bytes) {
+		ClassNode cn = new ClassNode();
+		ClassReader cr = new ClassReader(bytes);
+		cr.accept(cn, 0);
+		
+		Iterator<MethodNode> methods = cn.methods.iterator();
+		
+		while (methods.hasNext()) {
+			MethodNode m = methods.next();
+			
+			if (m.name.equals(names.get("netServerHandler_handleUpdateSign_func")) && m.desc.equals(names.get("netServerHandler_handleUpdateSign_desc"))) {
+				System.out.println("Found target method in NetServerHandler: " + m.name + m.desc);
+				
+				InsnList insns = new InsnList();
+				
+				insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onSignChange", "(L" + names.get("netServerHandler_javaName") + ";L" + names.get("packet130UpdateSign_javaName") + ";)L" + names.get("packet130UpdateSign_javaName") + ";" ));
+				LabelNode endIf = new LabelNode(new Label());
+				insns.add(new VarInsnNode(Opcodes.ASTORE, 1));
+				insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				insns.add(new JumpInsnNode(Opcodes.IFNULL, endIf));
+				insns.add(new InsnNode(Opcodes.RETURN));
+				insns.add(endIf);
+				
+				
+				
+			}
+		}
+		
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		cn.accept(cw);
+		return cw.toByteArray();
 	}
 
 	

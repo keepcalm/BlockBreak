@@ -19,6 +19,7 @@ import keepcalm.mods.events.events.PlayerMoveEvent;
 import keepcalm.mods.events.events.PlayerUseItemEvent;
 import keepcalm.mods.events.events.PressurePlateInteractEvent;
 import keepcalm.mods.events.events.SheepDyeEvent;
+import keepcalm.mods.events.events.SignChangeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPressurePlate;
 import net.minecraft.block.EnumMobType;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet10Flying;
+import net.minecraft.network.packet.Packet130UpdateSign;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -53,6 +55,18 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  */
 public class ForgeEventHelper {
+	
+	public static Packet130UpdateSign onSignChange(NetServerHandler handler, Packet130UpdateSign pack) {
+		SignChangeEvent ev = new SignChangeEvent(pack.xPosition, pack.yPosition, pack.zPosition, handler.getPlayer(), pack.signLines);
+		MinecraftForge.EVENT_BUS.post(ev);
+		
+		if (ev.isCanceled()) {
+			return null;
+		}
+		pack.signLines = ev.lines;
+		
+		return pack;
+	}
 	
 	public static boolean onLightningStrike(EntityLightningBolt entity, World world, int x, int y, int z) {
 		
