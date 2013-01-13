@@ -22,6 +22,16 @@ To test your code, place the nin.jar in your coremods folder.
 
 Note that it **IS** cancellable!
 
+
+Setting up your MCP
+==================
+
+Decompile forge, etc as usual.
+Copy the source/keepcalm folder into mcp/src/minecraft
+
+Place the BlockBreakNin.jar into mcp/jars/coremods
+
+
 Including the code in your mod
 ==============================
 

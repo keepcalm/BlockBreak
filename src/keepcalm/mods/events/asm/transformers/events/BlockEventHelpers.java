@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -79,7 +81,6 @@ public class BlockEventHelpers implements IClassTransformer {
 				System.out.println("Found target method in NetServerHandler: " + m.name + m.desc);
 				
 				InsnList insns = new InsnList();
-				
 				insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
 				insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
 				insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onSignChange", "(L" + names.get("netServerHandler_javaName") + ";L" + names.get("packet130UpdateSign_javaName") + ";)L" + names.get("packet130UpdateSign_javaName") + ";" ));
