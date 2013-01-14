@@ -27,10 +27,22 @@ Setting up your MCP
 ==================
 
 Decompile forge, etc as usual.
-Copy the source/keepcalm folder into mcp/src/minecraft
+Copy the source/keepcalm folder into mcp/src/minecraft.
 
-Place the BlockBreakNin.jar into mcp/jars/coremods
+You will need two property files from BukkitForge and put them into
+mcp/src/minecraft as well (NullPointerException will be thrown on start up
+otherwise):
 
+<pre>
+cd mcp/src/minecraft
+wget https://github.com/keepcalm/BukkitForge/raw/master/utils/mcp.properties
+wget https://github.com/keepcalm/BukkitForge/raw/master/utils/obf.properties
+</pre>
+
+Place the BlockBreakNin.jar into mcp/jars/coremods.
+
+Note for eclipse: If you get some visibility errors - just change the visibility
+of the claimed fields to public.
 
 Including the code in your mod
 ==============================
