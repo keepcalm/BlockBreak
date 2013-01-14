@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-
 import keepcalm.mods.events.asm.transformers.events.ObfuscationHelper;
 import keepcalm.mods.events.events.BlockDestroyEvent;
 import keepcalm.mods.events.events.CreeperExplodeEvent;
@@ -39,7 +37,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
