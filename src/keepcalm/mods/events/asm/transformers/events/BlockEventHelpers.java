@@ -87,7 +87,7 @@ public class BlockEventHelpers implements IClassTransformer {
 				LabelNode endIf = new LabelNode(new Label());
 				insns.add(new VarInsnNode(Opcodes.ASTORE, 1));
 				insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
-				insns.add(new JumpInsnNode(Opcodes.IFNULL, endIf));
+				insns.add(new JumpInsnNode(Opcodes.IFNONNULL, endIf));
 				insns.add(new InsnNode(Opcodes.RETURN));
 				insns.add(endIf);
 				
