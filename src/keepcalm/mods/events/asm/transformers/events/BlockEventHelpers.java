@@ -91,8 +91,7 @@ public class BlockEventHelpers implements IClassTransformer {
 				insns.add(new InsnNode(Opcodes.RETURN));
 				insns.add(endIf);
 				
-				
-				
+				m.instructions.insert(insns);
 			}
 		}
 		
