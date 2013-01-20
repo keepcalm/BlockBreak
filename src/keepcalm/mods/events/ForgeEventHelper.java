@@ -198,6 +198,10 @@ public class ForgeEventHelper {
 				MathHelper.floor_double(pack.zPosition), 
 				!pack.onGround);
 		
+		if (ev.newX == 0 && ev.newY == 0 && ev.newZ == 0) {
+			return false; // invalid or very unlikely move event.
+		}
+		
 		MinecraftForge.EVENT_BUS.post(ev);
 		
 		if (ev.isCanceled()) {
