@@ -71,8 +71,9 @@ public class ForgeEventHelper {
 		return ev.isCanceled();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static boolean onPressurePlateInteract(BlockPressurePlate pp, World world, int x, int y, int z) {
-		Class clazz = pp.getClass();
+		Class<? extends BlockPressurePlate> clazz = pp.getClass();
 		EnumMobType type;
 		try {
 			Field f = clazz.getField(ObfuscationHelper.getRelevantMappings().get("blockPressurePlate_triggerMobType_fieldName"));
@@ -159,7 +160,7 @@ public class ForgeEventHelper {
 	
 	public static boolean onBlockFlow(Block blck, World world, int flowX, int flowY, int flowZ) {
 		
-		Block flowingBlck = Block.blocksList[blck.blockID + 1];
+		//Block flowingBlck = Block.blocksList[blck.blockID + 1];
 		
 		// get original liquid
 		int origX = flowX;
@@ -215,7 +216,6 @@ public class ForgeEventHelper {
 	public static boolean onBlockDamage(ItemInWorldManager man) {
 		
 		// mcp has ridiculously long names
-		
 		if (man.curblockDamage % 2 == 1) {
 			return false;
 		}
