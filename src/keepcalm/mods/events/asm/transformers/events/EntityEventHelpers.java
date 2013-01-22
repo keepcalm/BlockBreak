@@ -7,7 +7,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -45,6 +44,7 @@ public class EntityEventHelpers implements IClassTransformer {
 		return bytes;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private byte[] transformNetServerHandler(byte[] bytes) {
 		ClassNode cn = new ClassNode();
 		ClassReader cr = new ClassReader(bytes);
@@ -79,6 +79,7 @@ public class EntityEventHelpers implements IClassTransformer {
 		
 	}
 	
+	/* ATM unused
 	private byte[] transformLightningBolt(byte[] bytes) {
 		ClassNode cn = new ClassNode();
 		ClassReader cr = new ClassReader(bytes);
@@ -143,6 +144,7 @@ public class EntityEventHelpers implements IClassTransformer {
 		cn.accept(cw);
 		return cw.toByteArray();
 	}
+	*/
 	
 	private byte[] transformEntitySheep(byte[] bytes) {
 		System.out.println("Transforming EntitySheep...");
@@ -150,6 +152,7 @@ public class EntityEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
 		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
@@ -199,6 +202,7 @@ public class EntityEventHelpers implements IClassTransformer {
 		
 		//System.out.println("Transforming EntityCreeper...");
 		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		
 		while (methods.hasNext()) {

@@ -3,7 +3,6 @@ package keepcalm.mods.events.asm.transformers.events;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Properties;
 
 
@@ -16,7 +15,8 @@ public class ObfuscationHelper {
 	private static final Properties obfProps = new Properties();
 	private static final Properties mcpProps = new Properties();
 	static {
-		boolean isObf = ObfuscationHelper.class.getClassLoader().getSystemResourceAsStream("net/minecraft/src") == null;
+		ObfuscationHelper.class.getClassLoader();
+		boolean isObf = ClassLoader.getSystemResourceAsStream("net/minecraft/src") == null;
 		/*mcpNames.put("itemStackClassName", "net.minecraft.item.ItemStack");
 		obfNames.put("itemStackClassName", "ur");
 
@@ -161,7 +161,8 @@ public class ObfuscationHelper {
 	}
 	
 	public static HashMap<String,String> getRelevantMappings() {
-		if (ObfuscationHelper.class.getClassLoader().getSystemResourceAsStream("net/minecraft/src") == null) {
+		ObfuscationHelper.class.getClassLoader();
+		if (ClassLoader.getSystemResourceAsStream("net/minecraft/src") == null) {
 			return obfNames;
 		}
 		else {
