@@ -42,15 +42,15 @@ public class BlockBreakEventAdder implements IClassTransformer
     /* removeBlock */
     private final String  targetMethodDesc = "(III)Z";
     
-    private final HashMap obfStrings;
-    private final HashMap mcpStrings;
+    private final HashMap<String, String> obfStrings;
+    private final HashMap<String, String> mcpStrings;
     
     public BlockBreakEventAdder()
     {
         /*
          * create a HashMap to store the obfuscated names of classes, methods, and fields used in the transformation
          */
-        obfStrings = new HashMap();
+        obfStrings = new HashMap<String, String>();
         /* net.minecraft.src.ItemInWorldManager */
         obfStrings.put("className", "ir");
         /* net/minecraft/src/ItemInWorldManager */
@@ -77,7 +77,7 @@ public class BlockBreakEventAdder implements IClassTransformer
         /*
          * create a HashMap to store the MCP names of classes, methods, and fields used in the transformation
          */
-        mcpStrings = new HashMap();
+        mcpStrings = new HashMap<String, String>();
         mcpStrings.put("className", "net.minecraft.item.ItemInWorldManager");
         mcpStrings.put("javaClassName", "net/minecraft/item/ItemInWorldManager");
         mcpStrings.put("targetMethodName", "removeBlock");
@@ -107,7 +107,8 @@ public class BlockBreakEventAdder implements IClassTransformer
         return bytes;
     }
     
-    private byte[] transformItemInWorldManager(byte[] bytes, HashMap hm)
+    @SuppressWarnings("unchecked")
+	private byte[] transformItemInWorldManager(byte[] bytes, HashMap<String, String> hm)
     {
         System.out.println("Class Transformation running on ItemInWorldManager...");
         

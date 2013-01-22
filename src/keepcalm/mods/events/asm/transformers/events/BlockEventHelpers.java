@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -17,12 +15,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
-import com.google.common.collect.Maps;
 
 import cpw.mods.fml.relauncher.IClassTransformer;
 
@@ -31,7 +26,7 @@ public class BlockEventHelpers implements IClassTransformer {
 	private HashMap<String,String> names;
 
 
-	private static final String itemInWorldUpdateDamageDesc = "()V";
+	//private static final String itemInWorldUpdateDamageDesc = "()V"; unused
 
 	public BlockEventHelpers() {
 		names = ObfuscationHelper.getRelevantMappings();
@@ -72,6 +67,7 @@ public class BlockEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
 		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		
 		while (methods.hasNext()) {
@@ -107,7 +103,7 @@ public class BlockEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
 		
-		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		
 		while (methods.hasNext()) {
@@ -156,6 +152,7 @@ public class BlockEventHelpers implements IClassTransformer {
 		return cw.toByteArray();
 	}
 	
+	/* UNUSED ATM
 	private byte[] transformBlockFire(byte[] bytes, HashMap<String, String> names) {
 		
 		ClassNode cn = new ClassNode();
@@ -169,14 +166,14 @@ public class BlockEventHelpers implements IClassTransformer {
 				System.out.println("Found target method: " + m.name + m.desc +"!");
 				
 			}
-		}*/
+		} * /
 		
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		cn.accept(cw);
 		return cw.toByteArray();
 		
-	}
+	}*/
 	
 	private byte[] transformBlockFlowing(byte[] bytes) {
 		ClassNode cn = new ClassNode();
@@ -184,6 +181,7 @@ public class BlockEventHelpers implements IClassTransformer {
 		cr.accept(cn,  0);
 		
 		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
@@ -223,6 +221,7 @@ public class BlockEventHelpers implements IClassTransformer {
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
 		
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
@@ -261,12 +260,14 @@ public class BlockEventHelpers implements IClassTransformer {
 		cr.accept(cn, 0);
 
 
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
 			if (m.name.equals(names.get("blockDispenser_dispense_func")) && m.desc.equals(names.get("blockDispenser_dispense_desc"))) {
 				System.out.println("Found target method: " + m.name + m.desc + "! Looking for landmark...");
 
+				@SuppressWarnings("unchecked")
 				Iterator<AbstractInsnNode> insns = m.instructions.iterator();
 
 				while (insns.hasNext()) {
@@ -323,7 +324,8 @@ public class BlockEventHelpers implements IClassTransformer {
 		ClassNode cn = new ClassNode();
 		ClassReader cr = new ClassReader(bytes);
 		cr.accept(cn, 0);
-		int idx = 0;
+		//int idx = 0;
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 		while (methods.hasNext()) {
 			MethodNode m = methods.next();
@@ -331,7 +333,7 @@ public class BlockEventHelpers implements IClassTransformer {
 			if (m.name.equals(names.get("itemStack_tryPlace_func")) && m.desc.equals("itemStack_tryPlace_desc")) {
 				System.out.println("Found target method: " + m.name + m.desc + "! Finding the last instruction!");
 
-				boolean found = false;
+				//boolean found = false;
 				System.out.println("Processing " + m.instructions.size() + " instructions...");
 				for (int index = 0; index < m.instructions.size(); index++) {
 					AbstractInsnNode instr = m.instructions.get(index);
@@ -372,7 +374,7 @@ public class BlockEventHelpers implements IClassTransformer {
 					}
 				}
 
-				idx++;
+				//idx++;
 			}
 
 		}
@@ -390,6 +392,7 @@ public class BlockEventHelpers implements IClassTransformer {
 
 		String targ = names.get("itemInWorldManager_updateBlockRemoving_func");
 
+		@SuppressWarnings("unchecked")
 		Iterator<MethodNode> methods = cn.methods.iterator();
 
 		while (methods.hasNext()) {

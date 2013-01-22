@@ -3,7 +3,6 @@ package keepcalm.mods.events.events;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.world.World;
 import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.entity.EntityEvent;
 
 @Cancelable
