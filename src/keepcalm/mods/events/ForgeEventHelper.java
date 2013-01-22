@@ -143,6 +143,7 @@ public class ForgeEventHelper {
 		MinecraftForge.EVENT_BUS.post(ev);
 		
 		if (ev.isCanceled()) {
+			creep.setDead();
 			return true;
 		}
 		return false;

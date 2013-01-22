@@ -217,8 +217,8 @@ public class EntityEventHelpers implements IClassTransformer {
 						insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "keepcalm/mods/events/ForgeEventHelper", "onCreeperExplode", "(L" + names.get("entityCreeper_javaName") + ";)Z"));
 						LabelNode endIf = new LabelNode(new Label());
 						insns.add(new JumpInsnNode(Opcodes.IFEQ, endIf));
-						insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
-						insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, names.get("entityCreeper_javaName"), names.get("entityCreeper_setDead_func"), names.get("entityCreeper_setDead_desc")));
+						//insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
+						//insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, names.get("entityCreeper_javaName"), names.get("entityCreeper_setDead_func"), names.get("entityCreeper_setDead_desc")));
 						insns.add(new InsnNode(Opcodes.RETURN));
 						insns.add(endIf);
 						insns.add(new LabelNode(new Label()));
